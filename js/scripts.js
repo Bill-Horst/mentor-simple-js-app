@@ -32,10 +32,27 @@ let POKEMONREPOSITORY = function () {
         return repository.filter(pokemon => pokemon.name === name);
     }
 
+    function addListItem(pokemon) {
+        let pokeButton = document.createElement('button');
+        pokeButton.innerHTML = pokemon.name;
+        pokeButton.classList.add('pokemon-button');
+        pokeButton.addEventListener('click', function(e) {
+            showDetails(pokemon)
+        });
+        let listItem = document.createElement('li');
+        listItem.appendChild(pokeButton);
+        return listItem;
+    }
+
+    function showDetails(pokemon) {
+        console.log(pokemon)
+    }
+
     return {
         getAll: getAll,
         add: add,
-        findByName: findByName
+        findByName: findByName,
+        addListItem: addListItem
     }
 }();
 
@@ -43,14 +60,12 @@ POKEMONREPOSITORY.add({ // test adding pokemon to repo
     name: 'Catasaur',
     height: 222,
     types: ['mew', 'neko punch']
-})
+});
+
+let pokemonList = document.querySelector('.pokemon-list');
 
 POKEMONREPOSITORY.getAll().forEach(pokemon => {
-    document.write(pokemon.name + ': ' + pokemon.height);
-    if (pokemon.height > 30) {
-        document.write('... <span style="color: red">Wow, that\'s big!</span>');
-    }
-    document.write('<br />');
+    pokemonList.appendChild(POKEMONREPOSITORY.addListItem(pokemon)); // changed it a bit... lesson asks to append to pokemonList from inside the iife, I'm appending it outside
 });
 
 console.log('test for findByName function: ', POKEMONREPOSITORY.findByName('Bulbasaur')[0].name); // test for findByName function
