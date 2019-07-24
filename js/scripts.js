@@ -28,9 +28,14 @@ let POKEMONREPOSITORY = function () {
         }
     }
 
+    function findByName(name) {
+        return repository.filter(pokemon => pokemon.name === name);
+    }
+
     return {
         getAll: getAll,
-        add: add
+        add: add,
+        findByName: findByName
     }
 }();
 
@@ -47,3 +52,5 @@ POKEMONREPOSITORY.getAll().forEach(pokemon => {
     }
     document.write('<br />');
 });
+
+console.log('test for findByName function: ', POKEMONREPOSITORY.findByName('Bulbasaur')[0].name); // test for findByName function
