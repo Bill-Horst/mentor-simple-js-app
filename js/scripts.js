@@ -1,7 +1,4 @@
-
-let pokemonList = document.querySelector('.pokemon-list');
-
-let POKEMONREPOSITORY = function () {
+let POKEMON_REPOSITORY = function () {
 
     let repository = [];
 
@@ -72,14 +69,79 @@ let POKEMONREPOSITORY = function () {
     }
 }();
 
-function showDetails(pokemon) {
-    POKEMONREPOSITORY.loadDetails(pokemon).then(function () {
-        console.log(pokemon)
-    });
-}
+var MODAL_CONTROLS = (function () {
+    var $modalContainer = document.querySelector('#modal-container');
 
-POKEMONREPOSITORY.loadList().then(function () {
-    POKEMONREPOSITORY.getAll().forEach(pokemon => {
-        pokemonList.appendChild(POKEMONREPOSITORY.addListItem(pokemon)); // changed it a bit... lesson asks to append to pokemonList from inside the iife, I'm appending it outside
+    function showModal(pokemon) {
+        // Clear all existing modal content
+        $modalContainer.innerHTML = '';
+
+        var modal = document.createElement('div');
+        modal.classList.add('modal');
+
+        // Add the new modal content
+        var closeButtonElement = document.createElement('button');
+        closeButtonElement.classList.add('modal-close');
+        closeButtonElement.innerText = 'Close';
+        closeButtonElement.addEventListener('click', hideModal);
+
+        var nameDisplay = document.createElement('h1');
+        nameDisplay.innerText = pokemon.name;
+
+        var heightDisplay = document.createElement('p');
+        heightDisplay.innerText = `Height: ${pokemon.height}`;
+
+        var imageDisplay = document.createElement('img');
+        imageDisplay.setAttribute('src', pokemon.imageUrl);
+
+        modal.appendChild(closeButtonElement);
+        modal.appendChild(nameDisplay);
+        modal.appendChild(heightDisplay);
+        modal.appendChild(imageDisplay);
+        $modalContainer.appendChild(modal);
+
+        $modalContainer.classList.add('is-visible');
+    }
+
+    function hideModal() {
+        $modalContainer.classList.remove('is-visible');
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && $modalContainer.classList.contains('is-visible')) {
+            hideModal();
+        }
+    });
+
+    $modalContainer.addEventListener('click', (e) => {
+        // Since this is also triggered when clicking INSIDE the modal container,
+        // We only want to close if the user clicks directly on the overlay
+        var target = e.target;
+        if (target === $modalContainer) {
+            hideModal();
+        }
+    });
+
+    return {
+        showModal: showModal,
+        hideModal: hideModal
+    }
+
+})();
+
+// The ul to which the Pokemon will be appended:
+let pokemonList = document.querySelector('.pokemon-list');
+
+// The entry point for the app - lists the clickable Pokemon:
+POKEMON_REPOSITORY.loadList().then(function () {
+    POKEMON_REPOSITORY.getAll().forEach(pokemon => {
+        pokemonList.appendChild(POKEMON_REPOSITORY.addListItem(pokemon)); // changed it a bit... lesson asks to append to pokemonList from inside the iife, I'm appending it outside
     });
 });
+
+// Shows details of clicked Pokemon in modal form:
+function showDetails(pokemon) {
+    POKEMON_REPOSITORY.loadDetails(pokemon).then(function () {
+        MODAL_CONTROLS.showModal(pokemon);
+    });
+}
