@@ -51,7 +51,7 @@ let POKEMON_REPOSITORY = function () {
         let pokeButton = document.createElement('button');
         pokeButton.innerHTML = pokemon.name;
         pokeButton.classList.add('pokemon-button');
-        pokeButton.addEventListener('click', function (e) {
+        pokeButton.addEventListener('click', function () {
             showDetails(pokemon)
         });
         let listItem = document.createElement('li');
